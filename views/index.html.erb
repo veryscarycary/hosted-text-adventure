@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Terminal</title>
+    <script>
+        var ws;
+
+        function connect() {
+            ws = new WebSocket('ws://localhost:3000/socket');
+
+            ws.onopen = function(event) {
+                console.log('WebSocket opened');
+            };
+
+            ws.onmessage = function(event) {
+                console.log('Received: ' + event.data);
+                // Display the received message in the terminal
+                document.getElementById('output').innerText += event.data + '\n';
+            };
+
+            ws.onerror = function(event) {
+                console.error('WebSocket error:', event);
+            };
+
+            ws.onclose = function(event) {
+                console.log('WebSocket closed');
+            };
+        }
+
+        function sendCommand() {
+            var command = document.getElementById('input').value;
+            console.log('Sending: ' + command);
+            ws.send(command);
+            // Clear the input field
+            document.getElementById('input').value = '';
+        }
+    </script>
+</head>
+<body>
+    <div id="terminal" style="width: 80%; margin: 0 auto;">
+        <pre id="output"></pre>
+        <input type="text" id="input" onkeydown="if (event.keyCode === 13) sendCommand()">
+        <button onclick="connect()">Connect</button>
+        <button onclick="sendCommand()">Send</button>
+    </div>
+</body>
+</html>
