@@ -65,3 +65,13 @@ The application is now ready to call. Once you hang up the call, you can visit `
 This library is released under the [MIT License][license]
 
 [license]: LICENSE.txt
+
+
+____________________________________
+
+Docker instructions to run:
+
+```
+docker build -t my-ruby-app .
+docker run -it -p 3000:3000 my-ruby-app
+```
