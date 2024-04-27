@@ -13,7 +13,7 @@ services:
     build:
       context: https://github.com/veryscarycary/farm-text-adventure
     ports:
-      - "3000:3000"  # Example port mapping for Ruby process
+      - "3001:3001"  # Example port mapping for Ruby process
     networks:
       - my-network
 
