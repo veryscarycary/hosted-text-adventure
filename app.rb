@@ -10,7 +10,9 @@ def erb(template)
 end
 
 App = Rack::Builder.new {
-  use(Rack::Static, urls: ["/recording"], root: 'recording')
+  # Connect to the Ruby process container
+  ruby_process_socket = TCPSocket.new('localhost', 3001)
+  # use(Rack::Static, urls: ["/recording"], root: 'recording')
 
   map('/socket') do
     run(->env{
@@ -23,10 +25,13 @@ App = Rack::Builder.new {
 
         ws.on :message do |event|
           puts "Sending message!"
-          # if event.data.is_a?(Array)
-          #   @call_data.append(event.data.pack('c*').unpack('s*'))
-          # else
-            ws.send(event.data)
+          # Send message to Ruby process
+          ruby_process_socket.puts(event.data)
+
+          # Receive response from Ruby process
+          response = ruby_process_socket.gets.chomp
+          ws.send(response)
+            # ws.send(event.data)
           # end
         end
 
