@@ -6,16 +6,16 @@ services:
       context: .
     ports:
       - "3000:3000"
-    depends_on:
-      - text-adventure
+    # depends_on:
+    #   - text-adventure
 
-  text-adventure:
-    build:
-      context: https://github.com/veryscarycary/farm-text-adventure
-    ports:
-      - "3001:3001"  # Example port mapping for Ruby process
-    networks:
-      - my-network
+  # text-adventure:
+  #   build:
+  #     context: https://github.com/veryscarycary/farm-text-adventure
+  #   ports:
+  #     - "3001:3001"  # Example port mapping for Ruby process
+  #   networks:
+  #     - my-network
 
 networks:
   my-network:

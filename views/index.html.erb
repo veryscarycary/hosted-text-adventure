@@ -13,9 +13,12 @@
             };
 
             ws.onmessage = function(event) {
-                console.log('Received: ' + event.data);
+                console.log('Received: ' + JSON.stringify(event.data));
+                let incomingMessage = event.data.replaceAll('\u001b[0;33;49m', '');
+                incomingMessage = incomingMessage.replaceAll('\u001b[0m', '');
+
                 // Display the received message in the terminal
-                document.getElementById('output').innerText += event.data + '\n';
+                document.getElementById('output').innerText += incomingMessage + '\n';
             };
 
             ws.onerror = function(event) {

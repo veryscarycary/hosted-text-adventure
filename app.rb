@@ -9,27 +9,53 @@ def erb(template)
   ERB.new(File.read(path)).result(binding)
 end
 
+def get_response_from_tcp_server(tcp_server)
+  response = ""
+  begin
+    loop do
+      chunk = tcp_server.recv_nonblock(1024)
+      response += chunk
+    end
+  rescue IO::WaitReadable, EOFError
+    # No more data available, continue processing
+  end
+  # Receive response from Ruby process
+  # response = ruby_process_socket.gets.chomp
+  puts "response: #{response}"
+  response
+end
+
 App = Rack::Builder.new {
   # Connect to the Ruby process container
-  ruby_process_socket = TCPSocket.new('localhost', 3001)
   # use(Rack::Static, urls: ["/recording"], root: 'recording')
-
+  
   map('/socket') do
     run(->env{
       puts env
       if Faye::WebSocket.websocket?(env)
         puts "WebSockets connection opened..."
-        # @call_data = []
         ws = Faye::WebSocket.new(env)
+        ruby_process_socket = TCPSocket.new('tcp-text-adventure', 3001)
         puts "Websocket initialized"
 
         ws.on :message do |event|
           puts "Sending message!"
           # Send message to Ruby process
           ruby_process_socket.puts(event.data)
+          puts "Event data: #{event.data}"
 
-          # Receive response from Ruby process
-          response = ruby_process_socket.gets.chomp
+          # response = ""
+          # i = 0
+          # while line = ruby_process_socket.gets.chomp
+          #   break if i > 1000
+          #   puts line
+          #   puts i
+          #   response += "#{line}\n"
+          #   i += 1
+          # end
+
+          response = get_response_from_tcp_server(ruby_process_socket)
+          puts "response: #{response}"
           ws.send(response)
             # ws.send(event.data)
           # end
