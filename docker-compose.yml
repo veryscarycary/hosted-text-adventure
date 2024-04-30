@@ -12,7 +12,9 @@ services:
 
   text-adventure:
     container_name: text-adventure
-    build: https://github.com/veryscarycary/farm-text-adventure.git#tcp-server
+    build:
+      context: https://github.com/veryscarycary/farm-text-adventure.git
+      dockerfile: Dockerfile-tcp-server
     stdin_open: true  # necessary for interactive mode
     tty: true  # necessary for interactive mode
     ports:
