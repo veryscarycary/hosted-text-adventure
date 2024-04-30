@@ -71,6 +71,13 @@ ____________________________________
 
 Docker instructions to run:
 
+BOTH TOGETHER:
+
+```
+docker compose build
+docker compose up
+```
+
 Websocket container
 
 ```
@@ -81,5 +88,5 @@ docker run -it -p 3000:3000 my-ruby-app
 Ruby process container
 
 ```
-docker run -p 3001:3001 --rm farm-text-adventure-text-adventure
+docker run -p 3001:3001 --network my-network -t text-adventure
 ```

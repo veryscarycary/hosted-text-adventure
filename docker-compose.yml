@@ -1,21 +1,24 @@
-version: '3.8'
-
 services:
   websocket-server:
+    container_name: websocket-server
     build:
       context: .
     ports:
       - "3000:3000"
-    # depends_on:
-    #   - text-adventure
+    networks:
+      - my-network
+    depends_on:
+      - text-adventure
 
-  # text-adventure:
-  #   build:
-  #     context: https://github.com/veryscarycary/farm-text-adventure
-  #   ports:
-  #     - "3001:3001"  # Example port mapping for Ruby process
-  #   networks:
-  #     - my-network
+  text-adventure:
+    container_name: text-adventure
+    build: https://github.com/veryscarycary/farm-text-adventure.git#tcp-server
+    stdin_open: true  # necessary for interactive mode
+    tty: true  # necessary for interactive mode
+    ports:
+      - "3001:3001"  # Port mapping for Ruby process
+    networks:
+      - my-network
 
 networks:
   my-network:

@@ -37,13 +37,14 @@
             // Clear the input field
             document.getElementById('input').value = '';
         }
+
+        connect();
     </script>
 </head>
 <body>
     <div id="terminal" style="width: 80%; margin: 0 auto;">
         <pre id="output"></pre>
         <input type="text" id="input" onkeydown="if (event.keyCode === 13) sendCommand()">
-        <button onclick="connect()">Connect</button>
         <button onclick="sendCommand()">Send</button>
     </div>
 </body>
