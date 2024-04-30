@@ -6,7 +6,7 @@ include Rack
 
 TCP_SERVER_CONTAINER_TAG = 'text-adventure'
 TCP_SERVER_CONTAINER_PORT = 3001
-DEFAULT_IO_TIMEOUT = 1
+DEFAULT_IO_TIMEOUT = 0.3
 
 def erb(template)
   path = File.expand_path("#{template}")
@@ -19,7 +19,7 @@ end
 #   response = ""
 #   begin
 #     loop do
-#       chunk = tcp_server.recv_nonblock(1024)
+#       chunk = tcp_server.recvmsg_nonblock(10000)
 #       response += chunk
 #     end
 #   rescue IO::WaitReadable, EOFError
