@@ -74,7 +74,6 @@ Docker instructions to run:
 BOTH TOGETHER:
 
 ```
-docker compose build
 docker compose up
 ```
 
