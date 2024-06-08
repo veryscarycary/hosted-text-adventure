@@ -1,51 +1,183 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>WebSocket Terminal</title>
-    <script>
-        var ws;
+    <head>
+        <title>Text Adventure</title>
+        <style>
+            body {
+                background-color: black;
+                color: #ffe800;
+                font-family: monospace;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
 
-        function connect() {
-            ws = new WebSocket('ws://localhost:3000/socket');
+            #terminal {
+                border: 1px solid #ffe800;
+                border-radius: 5px;
+                padding: 10px 20px;
+                border-radius: 5px;
+                border: 1px solid ffe800;
+                overflow: auto;
+                flex-grow: 1;
+                margin: 20px;
+            }
 
-            ws.onopen = function(event) {
-                console.log('WebSocket opened');
-            };
+            #terminal * {
+                overflow-anchor: none;
+            }
 
-            ws.onmessage = function(event) {
-                console.log('Received: ' + JSON.stringify(event.data));
-                let incomingMessage = event.data.replaceAll('\u001b[0;33;49m', '');
-                incomingMessage = incomingMessage.replaceAll('\u001b[0m', '');
+            #terminal-anchor {
+                overflow-anchor: auto;
+                height: 1px;
+            }
 
-                // Display the received message in the terminal
-                document.getElementById('output').innerText += incomingMessage + '\n';
-            };
+            #output {
+                margin: 0;
+            }
 
-            ws.onerror = function(event) {
-                console.error('WebSocket error:', event);
-            };
+            #input-container {
+                border: 1px solid #ffe800;
+                border-radius: 5px;
+                padding: 10px;
+                margin: 0 20px 20px 20px;
+                display: flex;
+                align-items: center;
+                position: relative;
+            }
 
-            ws.onclose = function(event) {
-                console.log('WebSocket closed');
-            };
-        }
+            #input {
+                background-color: black;
+                color: #ffe800;
+                font-family: monospace;
+                font-size: 14px;
+                border: none;
+                outline: none;
+                flex-grow: 1;
+                padding: 5px;
+                margin-right: 10px;
+                caret-color: transparent;
+            }
 
-        function sendCommand() {
-            var command = document.getElementById('input').value;
-            console.log('Sending: ' + command);
-            ws.send(command);
-            // Clear the input field
-            document.getElementById('input').value = '';
-        }
+            #input::placeholder {
+                color: #ffe800;
+            }
 
-        connect();
-    </script>
-</head>
-<body>
-    <div id="terminal" style="width: 80%; margin: 0 auto;">
-        <pre id="output"></pre>
-        <input type="text" id="input" onkeydown="if (event.keyCode === 13) sendCommand()">
-        <button onclick="sendCommand()">Send</button>
-    </div>
-</body>
+            button {
+                background-color: #ffe800;
+                font-size: 18px;
+                color: black;
+                padding: 5px 10px;
+                border: none;
+                cursor: pointer;
+            }
+
+            #cursor {
+                position: absolute;
+                left: 16px;
+                width: 10px;
+                height: 50%;
+                background-color: #ffe800;
+            }
+
+            .blink {
+                animation: blink 1s step-end infinite;
+            }
+
+            @keyframes blink {
+
+                0%,
+                100% {
+                    opacity: 1;
+                }
+
+                50% {
+                    opacity: 0;
+                }
+            }
+        </style>
+        <script>
+            var ws;
+            var typingTimer;
+            var doneTypingInterval = 300; // Time in ms (0.3 seconds)
+
+            function connect() {
+                ws = new WebSocket('ws://localhost:3000/socket');
+
+                ws.onopen = function (event) {
+                    console.log('WebSocket opened');
+                };
+
+                ws.onmessage = function (event) {
+                    console.log('Received: ' + JSON.stringify(event.data));
+                    let incomingMessage = event.data.replaceAll('\u001b[0;33;49m', '');
+                    incomingMessage = incomingMessage.replaceAll('\u001b[0m', '');
+
+                    // Display the received message in the terminal
+                    document.getElementById('output').innerText += incomingMessage + '\n';
+                };
+
+                ws.onerror = function (event) {
+                    console.error('WebSocket error:', event);
+                };
+
+                ws.onclose = function (event) {
+                    console.log('WebSocket closed');
+                };
+            }
+
+            function sendCommand() {
+                var command = document.getElementById('input').value;
+                console.log('Sending: ' + command);
+                ws.send(command);
+                // Clear the input field
+                document.getElementById('input').value = '';
+                updateCursor();
+                document.getElementById('terminal-anchor').scrollIntoView();
+            }
+
+            function updateCursor() {
+                var cursorLeftPosition = 16;
+                var input = document.getElementById('input');
+                var cursor = document.getElementById('cursor');
+                var inputLength = input.value.length;
+                cursor.style.left = cursorLeftPosition + (inputLength * 8.4) + 'px';
+            }
+
+            function startTyping() {
+                clearTimeout(typingTimer);
+                document.getElementById('cursor').classList.remove('blink');
+            }
+
+            function doneTyping() {
+                document.getElementById('cursor').classList.add('blink');
+            }
+
+            connect();
+
+            document.addEventListener('DOMContentLoaded', (event) => {
+                var input = document.getElementById('input');
+                input.addEventListener('input', function () {
+                    updateCursor();
+                    startTyping();
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(doneTyping, doneTypingInterval);
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="terminal">
+            <pre id="output"></pre>
+            <div id="terminal-anchor"></div>
+        </div>
+        <div id="input-container">
+            <div id="cursor" class="blink"></div>
+            <input type="text" id="input" onkeydown="if (event.keyCode === 13) sendCommand()" autofocus>
+            <button onclick="sendCommand()">Send</button>
+        </div>
+    </body>
 </html>
