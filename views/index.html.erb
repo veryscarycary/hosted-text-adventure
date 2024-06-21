@@ -100,12 +100,16 @@
             }
         </style>
         <script>
+            const ENVIRONMENT = '<%= ENV['ENVIRONMENT'] %>';
+            const WEBSOCKET_DOMAIN_PROD = 'text-adventure';
+            const WEBSOCKET_DOMAIN_DEV = 'localhost';
+
             var ws;
             var typingTimer;
             var doneTypingInterval = 300; // Time in ms (0.3 seconds)
 
             function connect() {
-                ws = new WebSocket('ws://localhost:3000/socket');
+                ws = new WebSocket(`ws://${ENVIRONMENT === 'production' ? WEBSOCKET_DOMAIN_PROD : WEBSOCKET_DOMAIN_DEV}:3000/socket`);
 
                 ws.onopen = function (event) {
                     console.log('WebSocket opened');
