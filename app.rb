@@ -75,6 +75,7 @@ class Server
 
     @web_socket_server.on :close do |event|
       puts 'WebSocket connection closed...'
+      puts "Event: #{event}"
       run(->env {
         [ 302, {'Location' =>'/'}, [[erb("views/index.html.erb")]] ]
       })
