@@ -109,7 +109,7 @@
             var doneTypingInterval = 300; // Time in ms (0.3 seconds)
 
             function connect() {
-                ws = new WebSocket(`ws://${ENVIRONMENT === 'production' ? WEBSOCKET_DOMAIN_PROD : WEBSOCKET_DOMAIN_DEV}:3000/socket`);
+                ws = new WebSocket(`wss://${ENVIRONMENT === 'production' ? WEBSOCKET_DOMAIN_PROD : WEBSOCKET_DOMAIN_DEV}:3000/socket`);
 
                 ws.onopen = function (event) {
                     console.log('WebSocket opened');
