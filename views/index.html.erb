@@ -101,15 +101,16 @@
         </style>
         <script>
             const ENVIRONMENT = '<%= ENV['ENVIRONMENT'] %>';
-            const WEBSOCKET_DOMAIN_PROD = 'text-adventure';
-            const WEBSOCKET_DOMAIN_DEV = 'localhost';
+            const PORT = '<%= ENV['PORT'] %>' || 3000;
+            const WEBSOCKET_ENDPOINT_PROD = 'wss://text-adventure'
+            const WEBSOCKET_ENDPOINT_DEV = 'ws://localhost'
 
             var ws;
             var typingTimer;
             var doneTypingInterval = 300; // Time in ms (0.3 seconds)
 
             function connect() {
-                ws = new WebSocket(`wss://${ENVIRONMENT === 'production' ? WEBSOCKET_DOMAIN_PROD : WEBSOCKET_DOMAIN_DEV}:3000/socket`);
+                ws = new WebSocket(`${ENVIRONMENT === 'production' ? WEBSOCKET_ENDPOINT_PROD : WEBSOCKET_ENDPOINT_DEV}:${PORT}/socket`);
 
                 ws.onopen = function (event) {
                     console.log('WebSocket opened');
