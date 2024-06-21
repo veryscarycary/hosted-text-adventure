@@ -102,7 +102,7 @@
         <script>
             const ENVIRONMENT = '<%= ENV['ENVIRONMENT'] %>';
             const PORT = '<%= ENV['PORT'] %>' || 3000;
-            const WEBSOCKET_ENDPOINT_PROD = `wss://text-adventure:${PORT}`
+            const WEBSOCKET_ENDPOINT_PROD = `ws://hosted-text-adventure.railway.internal:${PORT}`
             const WEBSOCKET_ENDPOINT_DEV = `ws://localhost:${PORT}`
 
             var ws;
