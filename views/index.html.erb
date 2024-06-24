@@ -102,7 +102,7 @@
         <script>
             const ENVIRONMENT = '<%= ENV['ENVIRONMENT'] %>';
             const PORT = '<%= ENV['PORT'] %>' || 3000;
-            var WEBSOCKET_ENDPOINT_PROD = `wss://${window.document.location.host}`
+            const WEBSOCKET_ENDPOINT_PROD = `wss://${window.document.location.host}`
             const WEBSOCKET_ENDPOINT_DEV = `ws://localhost:${PORT}`
 
             var ws;
