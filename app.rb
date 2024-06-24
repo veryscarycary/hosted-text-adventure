@@ -69,7 +69,7 @@ class Server
     send_to_client(receive_from_ruby_process) # immediately send first output from ruby process
 
     @web_socket_server.on :open do |event|
-      p [:open, ws.object_id]
+      p [:open, @web_socket_server.object_id]
     end
 
     @web_socket_server.on :message do |event|
@@ -83,7 +83,7 @@ class Server
     @web_socket_server.on :close do |event|
       puts 'WebSocket connection closed...'
       puts "Event: #{event}"
-      p [:close, ws.object_id, event.code, event.reason]
+      p [:close, @web_socket_server.object_id, event.code, event.reason]
       run(->env {
         [ 302, {'Location' =>'/'}, [[erb("views/index.html.erb")]] ]
       })
