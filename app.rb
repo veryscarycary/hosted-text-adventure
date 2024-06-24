@@ -8,6 +8,7 @@ TCP_SERVER_ENDPOINT_DEV = 'text-adventure' # docker allows address to be the con
 TCP_SERVER_ENDPOINT_PROD = 'text-adventure.railway.internal'
 TCP_SERVER_CONTAINER_PORT = 3001
 DEFAULT_IO_TIMEOUT = 0.3
+KEEPALIVE_TIME = 30 # in seconds
 
 def erb(template)
   path = File.expand_path("#{template}")
@@ -60,7 +61,7 @@ class Server
   attr_accessor :web_socket_server
 
   def initialize(env)
-    @web_socket_server = Faye::WebSocket.new(env)
+    @web_socket_server = Faye::WebSocket.new(env, nil, { ping: KEEPALIVE_TIME })
     puts "WebSockets connection opened and initialized..."
     @tcp_server = TCPSocket.new(ENV['ENVIRONMENT'] == "production" ? TCP_SERVER_ENDPOINT_PROD : TCP_SERVER_ENDPOINT_DEV, TCP_SERVER_CONTAINER_PORT)
     puts "TCP Socket connection opened and initialized..."
