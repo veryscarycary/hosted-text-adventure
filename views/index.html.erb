@@ -83,6 +83,10 @@
                 background-color: #ffe800;
             }
 
+            .hint {
+                color: #ff2c71;
+            }
+
             .blink {
                 animation: blink 1s step-end infinite;
             }
@@ -118,11 +122,36 @@
 
                 ws.onmessage = function (event) {
                     console.log('Received: ' + JSON.stringify(event.data));
-                    let incomingMessage = event.data.replaceAll('\u001b[0;33;49m', '');
-                    incomingMessage = incomingMessage.replaceAll('\u001b[0m', '');
+                    const yellowArtifactFront = '\u001b[0;33;49m';
+                    const yellowArtifactBack = '\u001b[0m';
+                    const purpleArtifact = '\u001b[0;35;49m';
+                    const outputEl = document.getElementById('output');
+                    let hint;
+                    let incomingMessage = event.data.replaceAll(yellowArtifactFront, '');
+                    incomingMessage = incomingMessage.replaceAll(yellowArtifactBack, '');
+
+                    // process hints
+                    if (incomingMessage.includes(purpleArtifact)) {
+                        let hintIndex = incomingMessage.indexOf(purpleArtifact);
+                        let hintText = incomingMessage.slice(hintIndex, incomingMessage.length);
+                        hintText = hintText.slice(hintText.indexOf(purpleArtifact) + purpleArtifact.length, hintText.length);
+                        hint = document.createElement('span');
+                        hint.classList.add('hint');
+                        hint.textContent = hintText;
+
+                        // remove hint from rest of message
+                        incomingMessage = incomingMessage.slice(0, hintIndex);
+                    }
 
                     // Display the received message in the terminal
-                    document.getElementById('output').innerText += incomingMessage + '\n';
+                    const incomingMessageEl = document.createElement('span');
+                    incomingMessageEl.textContent = incomingMessage;
+                    outputEl.appendChild(incomingMessageEl);
+                    outputEl.appendChild(document.createElement('br'));
+
+                    if (hint) {
+                        outputEl.appendChild(hint);
+                    }
                 };
 
                 ws.onerror = function (event) {
