@@ -1,6 +1,10 @@
 # Hosted Text Adventure
 
-____________________________________
+<img width="1234" alt="image" src="https://github.com/veryscarycary/hosted-text-adventure/assets/16945851/f0b2e8d5-86f3-4d1a-9ba8-3672c2b4a0b0">
+
+## Dependencies
+
+- Docker (install at https://docs.docker.com/get-docker/)
 
 ## Install
 
