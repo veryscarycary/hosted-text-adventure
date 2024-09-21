@@ -9,6 +9,8 @@ services:
       - my-network
     depends_on:
       - text-adventure
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
 
   text-adventure:
     container_name: text-adventure
