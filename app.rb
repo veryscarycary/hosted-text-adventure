@@ -4,8 +4,7 @@ require 'faye/websocket'
 require 'json'
 include Rack
 
-TCP_SERVER_ENDPOINT_DEV = 'text-adventure' # docker allows address to be the container name
-TCP_SERVER_ENDPOINT_PROD = 'text-adventure.railway.internal'
+TCP_SERVER_ENDPOINT = ENV['TCP_SERVER_ENDPOINT'] || 'text-adventure' # docker allows address to be the container name
 TCP_SERVER_CONTAINER_PORT = 3001
 DEFAULT_IO_TIMEOUT = 0.3
 KEEPALIVE_TIME = 30 # in seconds
@@ -63,7 +62,7 @@ class Server
   def initialize(env)
     @web_socket_server = Faye::WebSocket.new(env, nil, { ping: KEEPALIVE_TIME })
     puts "WebSockets connection opened and initialized..."
-    @tcp_server = TCPSocket.new(ENV['ENVIRONMENT'] == "production" ? TCP_SERVER_ENDPOINT_PROD : TCP_SERVER_ENDPOINT_DEV, TCP_SERVER_CONTAINER_PORT)
+    @tcp_server = TCPSocket.new(TCP_SERVER_ENDPOINT, TCP_SERVER_CONTAINER_PORT)
     puts "TCP Socket connection opened and initialized..."
 
     send_to_client(receive_from_ruby_process) # immediately send first output from ruby process
