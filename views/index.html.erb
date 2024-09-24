@@ -114,6 +114,8 @@
             var doneTypingInterval = 300; // Time in ms (0.3 seconds)
 
             function connect() {
+                var initialFetchTimer = null;
+
                 ws = new WebSocket(`${ENVIRONMENT === 'production' ? WEBSOCKET_ENDPOINT_PROD : WEBSOCKET_ENDPOINT_DEV}/socket`);
 
                 ws.onopen = function (event) {
@@ -121,6 +123,11 @@
                 };
 
                 ws.onmessage = function (event) {
+                    if (event.data === '' && !initialFetchTimer) {
+                        // this is necessary in order to counteract the occasional empty response on first connect
+                        initialFetchTimer = setTimeout(sendCommand, 500);
+                    }
+
                     console.log('Received: ' + JSON.stringify(event.data));
                     const yellowArtifactFront = '\u001b[0;33;49m';
                     const yellowArtifactBack = '\u001b[0m';
