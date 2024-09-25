@@ -123,6 +123,10 @@ class Server
 end
 
 App = Rack::Builder.new {  
+  use Rack::Static,
+  urls: ["/favicon"],
+  root: File.expand_path(".")
+
   map('/socket') do
     run(->env{
       puts env
