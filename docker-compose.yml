@@ -1,6 +1,7 @@
 services:
   websocket-server:
     container_name: websocket-server
+    restart: unless-stopped
     build:
       context: .
     ports:
@@ -14,6 +15,7 @@ services:
 
   text-adventure:
     container_name: text-adventure
+    restart: unless-stopped
     build:
       context: https://github.com/veryscarycary/farm-text-adventure.git
       dockerfile: Dockerfile-tcp-server
